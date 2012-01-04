@@ -1,6 +1,5 @@
 # knife-vagrant
-# knife plugin for spinning up a vagrant instance and testing a specific recipe.
-# TODO: add chef error and report handling
+# knife plugin for spinning up a vagrant instance and testing a runlist.
 
 module MyModule 
   class VagrantTest < Chef::Knife
