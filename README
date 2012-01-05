@@ -1,1 +1,7 @@
-First pass at knife-vagrant, a knife plugin that will create a Vagrant box, then run a set of Chef recipes in it.
+First pass at knife-vagrant, a knife plugin that will create a Vagrant box, then run a set of Chef recipes in it.  Right now here's the setup required:
+
+- Virtualbox 4.1.X
+- Vagrant (http://vagrantup.com/)
+- chef gem install (client only)
+
+Eventually I plan on packaging knife-vagrant as a gem, so the chef and vagrant gems will come along with it.
