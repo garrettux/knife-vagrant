@@ -19,6 +19,7 @@ Not ready yet, will be available on rubygems.org later.
 
 Usage
 -------------------
+
 knife vagrant test (options)
 
     -b, --box BOX                    Name of vagrant box to be provisioned
