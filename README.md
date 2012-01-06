@@ -20,30 +20,55 @@ Not ready yet, will be available on rubygems.org later.
 Usage
 -------------------
 knife vagrant test (options)
+
     -b, --box BOX                    Name of vagrant box to be provisioned
+
     -U, --box-url URL                URL of pre-packaged vbox template.  Can be a local path or an HTTP URL.  Defaults to ./package.box
+
     -l, --chef-loglevel LEVEL        Logging level for the chef-client process that runs inside the provisioned VM.  Default is INFO
+
     -s, --server-url URL             Chef Server URL
+
     -k, --key KEY                    API Client Key
+
         --color                      Use colored output
+
     -c, --config CONFIG              The configuration file to use
+
         --defaults                   Accept default values for all questions
+
     -x, --destroy                    Destroy vagrant box and delete chef node/client when finished
+
     -e, --editor EDITOR              Set the editor to use for interactive commands
+
     -E, --environment ENVIRONMENT    Set the Chef environment
+
     -F, --format FORMAT              Which format to use for output
+
     -H, --hostname HOSTNAME          Hostname to be set as hostname on vagrant box when provisioned
+
     -m, --memsize MEMORY             Amount of RAM to allocate to provisioned VM, in MB.  Defaults to 1024
+
         --no-color                   Don't use colors in the output
+
     -n, --no-editor                  Do not open EDITOR, just accept the data as is
+
     -u, --user USER                  API Client Username
+
         --print-after                Show the data after a destructive operation
+
     -D, --vagrant-dir PATH           Path to vagrant project directory.  Defaults to cwd (/home/mgarrett/knife-vagrant) if not specified
+
     -r, --vagrant-run-list RUN_LIST  Comma separated list of roles/recipes to apply before applying RECIPE
+
     -V, --verbose                    More verbose output. Use twice for max verbosity
+
     -v, --version                    Show chef version
+
     -y, --yes                        Say yes to all prompts for confirmation
+
     -h, --help                       Show this message
+
 
 Disclaimer
 -------------------
