@@ -1,7 +1,7 @@
 # knife-vagrant
 # knife plugin for spinning up a vagrant instance and testing a runlist.
 
-module MyModule 
+module KnifeVagrant
   class VagrantTest < Chef::Knife
 
     banner "knife vagrant test (options)"
