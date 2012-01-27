@@ -37,7 +37,7 @@ knife vagrant test (options)
 
     -D, --vagrant-dir PATH           Path to vagrant project directory.  Defaults to cwd (/home/mgarrett/knife-vagrant) if not specified
 
-    -r, --vagrant-run-list RUN_LIST  Comma separated list of roles/recipes to apply before applying RECIPE
+    -r, --vagrant-run-list RUN_LIST  Comma separated list of roles/recipes to apply
 
     -y, --yes                        Say yes to all prompts for confirmation
 

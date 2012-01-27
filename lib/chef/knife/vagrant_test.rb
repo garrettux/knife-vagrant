@@ -26,7 +26,7 @@ module KnifeVagrant
     option :vagrant_run_list,
       :short => "-r RUN_LIST",
       :long => "--vagrant-run-list RUN_LIST",
-      :description => "Comma separated list of roles/recipes to apply before applying RECIPE",
+      :description => "Comma separated list of roles/recipes to apply",
       :proc => lambda { |o| o.split(/[\s,]+/) },
       :default => []
  
