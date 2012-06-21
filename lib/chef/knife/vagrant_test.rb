@@ -71,12 +71,11 @@ module KnifePlugins
       runlist.collect { |i| "\"#{i}\"" }.join(",\n")
     end
 
-    # got almost finished with this and remembered I could have used ERB... I'll switch it over to ERB template when i start packaging it as a gem
+    # TODO:  see if there's a way to pass this whole thing in as an object or hash or something, instead of writing a file to disk.
     def build_vagrantfile
       file = <<-EOF
         Vagrant::Config.run do |config|
-          config.ssh.forwarded_port_key = "ssh"
-          config.vm.forward_port("ssh", 22, 2222)
+          config.vm.forward_port(22, 2222)
           config.vm.box = "#{config[:box]}"
           config.vm.host_name = "#{config[:hostname]}"
           config.vm.customize do |vm|
@@ -86,7 +85,7 @@ module KnifePlugins
           config.vm.box_url = "#{config[:box_url]}"
           config.vm.provision :chef_client do |chef|
             chef.chef_server_url = "#{Chef::Config[:chef_server_url]}"
-            chef.validation_key_path = "#{Chef::Config[:validation_key_path]}"
+            chef.validation_key_path = "#{Chef::Config[:validation_key]}"
             chef.validation_client_name = "#{Chef::Config[:validation_client_name]}"
             chef.node_name = "#{config[:hostname]}"
             chef.provisioning_path = "#{Chef::Config[:provisioning_path]}"
@@ -114,8 +113,7 @@ module KnifePlugins
       Dir.chdir(config[:vagrant_dir])
       vagrantfile = "#{config[:vagrant_dir]}/Vagrantfile"
       write_vagrantfile(vagrantfile, build_vagrantfile)
-      @vagrant_env = Vagrant::Environment.new(:cwd => config[:vagrant_dir])
-      @vagrant_env.ui = Vagrant::UI::Shell.new(@vagrant_env, Thor::Base.shell.new) 
+      @vagrant_env = Vagrant::Environment.new(:cwd => config[:vagrant_dir], :ui_class => Vagrant::UI::Colored)
       @vagrant_env.load!
       begin
         @vagrant_env.cli("up")
