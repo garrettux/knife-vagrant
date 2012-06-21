@@ -15,7 +15,8 @@ Installation
 Copy https://github.com/garrettux/knife-vagrant/blob/master/lib/chef/knife/vagrant_test.rb to your .chef/plugins/knife directory.
 
 #### Gem Install
-Not ready yet, will be available on rubygems.org later.
+knife-vagrant is available on rubygems.org.
+ 	gem install knife-vagrant
 
 Usage
 -------------------
