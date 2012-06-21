@@ -16,6 +16,7 @@ Copy https://github.com/garrettux/knife-vagrant/blob/master/lib/chef/knife/vagra
 
 #### Gem Install
 knife-vagrant is available on rubygems.org.
+
     gem install knife-vagrant
 
 Usage
