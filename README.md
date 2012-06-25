@@ -1,6 +1,6 @@
 knife-vagrant
 ========
-First pass at knife-vagrant, a knife plugin that will create a Vagrant box, then run a set of Chef recipes in it.  Eventually will also run cucumber tests and report the results.
+First pass at knife-vagrant, a knife plugin that will create a Vagrant box, then run a set of Chef recipes in it.
 
 Requirements
 -------------------
