@@ -120,8 +120,9 @@ module KnifePlugins
       ensure
         if config[:destroy]
           ui.confirm("Destroy vagrant box #{config[:box]} and delete chef node and client")
-          config[:yes] = true unless config[:yes]
-          @vagrant_env.cli("destroy")
+          config[:yes] = true
+          args = %w[ destroy --force ]
+          @vagrant_env.cli(args)
           delete_object(Chef::Node, config[:hostname])
           delete_object(Chef::ApiClient, config[:hostname])
         end
