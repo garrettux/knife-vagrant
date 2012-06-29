@@ -78,10 +78,8 @@ module KnifePlugins
           config.vm.forward_port(22, 2222)
           config.vm.box = "#{config[:box]}"
           config.vm.host_name = "#{config[:hostname]}"
-          config.vm.customize do |vm|
-            vm.memory_size = #{config[:memsize]}
-            vm.name = "#{config[:box]}"
-          end
+          config.vm.customize [ "modifyvm", :id, "--memory", #{config[:memsize]} ]
+          config.vm.customize [ "modifyvm", :id, "--name", "#{config[:box]}" ]
           config.vm.box_url = "#{config[:box_url]}"
           config.vm.provision :chef_client do |chef|
             chef.chef_server_url = "#{Chef::Config[:chef_server_url]}"
