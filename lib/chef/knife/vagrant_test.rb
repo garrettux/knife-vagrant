@@ -14,14 +14,19 @@ module KnifePlugins
       require 'chef/node'
       require 'chef/api_client'
     end
+
+    option :port_forward,
+      :short => '-p PORTS',
+      :long => '--port-forward PORTS',
+      :description => "Port forwarding.  Host port, VM port separated by a colon.  E.G. to forward 80 on the host machine to 8080 on the VM, -p 80:8080.  To list multiple forwards separate with a comma, e.g. \"-p 80:8080,22:2222\"",
+      :proc => lambda { |o| Hash[o.split(/,/).collect { |a| a.split(/:/) }] },
+      :default => {}
  
-    # Default is nil here because if :cwd passed to the Vagrant::Environment object is nil,
-    # it defaults to Dir.pwd, which is the cwd of the running process.
     option :vagrant_dir,
       :short => '-D PATH',
       :long => '--vagrant-dir PATH',
       :description => "Path to vagrant project directory.  Defaults to cwd (#{Dir.pwd}) if not specified",
-      :default => nil
+      :default => Dir.pwd
       
     option :vagrant_run_list,
       :short => "-r RUN_LIST",
@@ -71,11 +76,15 @@ module KnifePlugins
       runlist.collect { |i| "\"#{i}\"" }.join(",\n")
     end
 
+    def build_port_forwards(ports)
+      ports.collect { |k, v| "config.vm.forward_port(#{k}, #{v})" }.join("\n")
+    end
+
     # TODO:  see if there's a way to pass this whole thing in as an object or hash or something, instead of writing a file to disk.
     def build_vagrantfile
       file = <<-EOF
         Vagrant::Config.run do |config|
-          config.vm.forward_port(22, 2222)
+          #{build_port_forwards(config[:port_forward])}
           config.vm.box = "#{config[:box]}"
           config.vm.host_name = "#{config[:hostname]}"
           config.vm.customize [ "modifyvm", :id, "--memory", #{config[:memsize]} ]
@@ -120,9 +129,9 @@ module KnifePlugins
       ensure
         if config[:destroy]
           ui.confirm("Destroy vagrant box #{config[:box]} and delete chef node and client")
-          config[:yes] = true
           args = %w[ destroy --force ]
           @vagrant_env.cli(args)
+          config[:yes]
           delete_object(Chef::Node, config[:hostname])
           delete_object(Chef::ApiClient, config[:hostname])
         end
