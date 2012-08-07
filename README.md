@@ -39,7 +39,9 @@ knife vagrant test (options)
     -H, --hostname HOSTNAME          Hostname to be set as hostname on vagrant box when provisioned
     -m, --memsize MEMORY             Amount of RAM to allocate to provisioned VM, in MB.  Defaults to 1024
     -u, --user USER                  API Client Username
-    -p, --port-forward PORTS         Port forwarding.  Host port, VM port separated by a colon.  E.G. to forward 80 on the host machine to 8080 on the VM, -p 80:8080.  To list multiple forwards separate with a comma, e.g. "-p 80:8080,22:2222"
+    -p, --port-forward PORTS         Port forwarding.  Host port, VM port separated by a colon.  E.G. to forward 80 on the 
+                                     host machine to 8080 on the VM, -p 80:8080.  
+                                     To list multiple forwards separate with a comma, e.g. "-p 80:8080,22:2222"
         --print-after                Show the data after a destructive operation
     -D, --vagrant-dir PATH           Path to vagrant project directory.  Defaults to cwd (/Users/mgarrett/vagrant) if not specified
     -r, --vagrant-run-list RUN_LIST  Comma separated list of roles/recipes to apply
