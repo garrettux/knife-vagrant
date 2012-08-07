@@ -50,9 +50,7 @@ knife vagrant test (options)
     -y, --yes                        Say yes to all prompts for confirmation
     -h, --help                       Show this message
 
-Example
--------------------
-Here's an example:
+#### Example
 
     knife vagrant test -b base -H vagrant-mgarrett01 -r role[vagrant] -m 2048 -p 22:2222,8080:8080 -b box64 -U http://files.vagrantup.com/lucid64.box -xy
 
