@@ -52,7 +52,7 @@ knife vagrant test (options)
 
 #### Example
 
-    knife vagrant test -b base -H vagrant-mgarrett01 -r role[vagrant] -m 2048 -p 22:2222,8080:8080 -b box64 -U http://files.vagrantup.com/lucid64.box -xy
+    knife vagrant test -H vagrant01 -r role[vagrant] -m 2048 -p 22:2222,8080:8080 -b box64 -U http://files.vagrantup.com/lucid64.box -xy
 
 Disclaimer
 -------------------
