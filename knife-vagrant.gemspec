@@ -7,5 +7,5 @@ Gem::Specification.new do |s|
   s.summary = %q{knife-vagrant, a knife plugin that will create a Vagrant box, then run a set of Chef recipes in it.}
   s.homepage = %q{https://github.com/garrettux/knife-vagrant}
   s.description = %q{knife-vagrant, a knife plugin that will create a Vagrant box, then run a set of Chef recipes in it.}
-  s.files = [ "README.md", "lib/chef/knife/vagrant_test.rb"]
+  s.files = [ "README.md", "lib/chef/knife/vagrant_server.rb"]
 end
