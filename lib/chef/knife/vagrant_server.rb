@@ -73,6 +73,13 @@ module KnifePlugins
         require 'vagrant/cli'
       end
 
+      option :networks,
+        :short => '-n NETWORKS',
+        :long => '--networks ',
+        :description => 'Network definitions. Comma separated network entries containing type:data:options Pairs. Where data is network adress or bridge info'
+        :proc => lambda { |o| o.split(/,/).collect { |a| a.split(/:/) } },
+        :default {}
+
       option :port_forward,
         :short => '-p PORTS',
         :long => '--port-forward PORTS',
