@@ -143,7 +143,6 @@ module KnifePlugins
 
       def build_networks(networks)
         output = ""
-        puts "DEBUG: Networks: #{networks.inspect}"
         networks.each do |net|
           case net[0].downcase
           when "bridge"
