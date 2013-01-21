@@ -76,9 +76,9 @@ module KnifePlugins
       option :networks,
         :short => '-n NETWORKS',
         :long => '--networks ',
-        :description => 'Network definitions. Comma separated network entries containing type:data:options Pairs. Where data is network adress or bridge info'
+        :description => 'Network definitions. Comma separated network entries containing type:data Pairs. Where data is network adress or bridge info',
         :proc => lambda { |o| o.split(/,/).collect { |a| a.split(/:/) } },
-        :default {}
+        :default => []
 
       option :port_forward,
         :short => '-p PORTS',
@@ -132,6 +132,28 @@ module KnifePlugins
         ports.collect { |k, v| "config.vm.forward_port(#{k}, #{v})" }.join("\n")
       end
 
+      def parse_hostonly(network)
+        addr, mask = network.split("/")
+        config = "\"#{addr}\""
+        if mask
+          config << ", :netmask => \"#{mask}\""
+        end
+        config
+      end
+
+      def build_networks(networks)
+        output = ""
+        puts "DEBUG: Networks: #{networks.inspect}"
+        networks.each do |net|
+          case net[0].downcase
+          when "bridge"
+            output << "config.vm.network :bridged, :bridge => #{net[1]}\n"
+          when "hostonly"
+            output << "config.vm.network :hostonly, #{parse_hostonly(net[1])}\n"
+          end
+        end
+      end
+
       # TODO:  see if there's a way to pass this whole thing in as an object or hash or something, instead of writing a file to disk.
       def build_vagrantfile
         file = <<-EOF
@@ -142,6 +164,7 @@ module KnifePlugins
             config.vm.customize [ "modifyvm", :id, "--memory", #{config[:memsize]} ]
             config.vm.customize [ "modifyvm", :id, "--name", "#{config[:hostname]}" ]
             config.vm.box_url = "#{config[:box_url]}"
+            #{build_networks(config[:networks])}
             config.vm.provision :chef_client do |chef|
               chef.chef_server_url = "#{Chef::Config[:chef_server_url]}"
               chef.validation_key_path = "#{Chef::Config[:validation_key]}"
