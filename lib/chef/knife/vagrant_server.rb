@@ -123,6 +123,13 @@ module KnifePlugins
         :description => 'Logging level for the chef-client process that runs inside the provisioned VM.  Default is INFO',
         :default => 'INFO'
 
+      option :json_attributes,
+        :short => '-j JSON',
+        :long => '--json-attributes JSON',
+        :description => 'A JSON string to be added to the first run of chef-client',
+        :proc => lambda { |o| JSON.parse(o) },
+        :default => {} 
+
       # TODO - hook into chef/runlist
       def build_runlist(runlist)
         runlist.collect { |i| "\"#{i}\"" }.join(",\n")
@@ -156,6 +163,7 @@ module KnifePlugins
 
       # TODO:  see if there's a way to pass this whole thing in as an object or hash or something, instead of writing a file to disk.
       def build_vagrantfile
+        
         file = <<-EOF
           Vagrant::Config.run do |config|
             #{build_port_forwards(config[:port_forward])}
@@ -172,6 +180,7 @@ module KnifePlugins
               chef.node_name = "#{config[:hostname]}"
               chef.log_level = :#{config[:chef_loglevel].downcase}
               chef.environment = "#{Chef::Config[:environment]}"
+              chef.json = #{config[:json_attributes]}
               chef.run_list = [
                 #{build_runlist(config[:vagrant_run_list])}
               ]
