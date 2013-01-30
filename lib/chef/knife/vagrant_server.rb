@@ -111,6 +111,12 @@ module KnifePlugins
         :description => 'URL of pre-packaged vbox template.  Can be a local path or an HTTP URL.  Defaults to ./package.box',
         :default => "#{Dir.pwd}/package.box"
 
+      option :box,
+        :short => '-b BOXNAME',
+        :long => '--box BOXNAME',
+        :description => 'specify a boxname to use',
+        :default => ""
+
       option :memsize,
         :short => '-m MEMORY',
         :long => '--memsize MEMORY',
@@ -156,10 +162,17 @@ module KnifePlugins
 
       # TODO:  see if there's a way to pass this whole thing in as an object or hash or something, instead of writing a file to disk.
       def build_vagrantfile
+        # if no box is given use hostname for the box otherwise use
+        # whats specified
+        box = "config.vm.box = '#{config[:hostname]}'"
+        unless config[:box].empty?
+          box =  "config.vm.box = '#{config[:box]}'"
+        end 
+
         file = <<-EOF
           Vagrant::Config.run do |config|
             #{build_port_forwards(config[:port_forward])}
-            config.vm.box = "#{config[:hostname]}"
+            #{box} 
             config.vm.host_name = "#{config[:hostname]}"
             config.vm.customize [ "modifyvm", :id, "--memory", #{config[:memsize]} ]
             config.vm.customize [ "modifyvm", :id, "--name", "#{config[:hostname]}" ]
