@@ -111,6 +111,12 @@ module KnifePlugins
         :description => 'URL of pre-packaged vbox template.  Can be a local path or an HTTP URL.  Defaults to ./package.box',
         :default => "#{Dir.pwd}/package.box"
 
+      option :box,
+        :short => '-b BOXNAME',
+        :long => '--box BOXNAME',
+        :description => 'specify a boxname to use',
+        :default => ""
+
       option :memsize,
         :short => '-m MEMORY',
         :long => '--memsize MEMORY',
@@ -122,6 +128,13 @@ module KnifePlugins
         :long => '--chef-loglevel LEVEL',
         :description => 'Logging level for the chef-client process that runs inside the provisioned VM.  Default is INFO',
         :default => 'INFO'
+
+      option :json_attributes,
+        :short => '-j JSON',
+        :long => '--json-attributes JSON',
+        :description => 'A JSON string to be added to the first run of chef-client',
+        :proc => lambda { |o| JSON.parse(o) },
+        :default => {} 
 
       # TODO - hook into chef/runlist
       def build_runlist(runlist)
@@ -143,7 +156,6 @@ module KnifePlugins
 
       def build_networks(networks)
         output = ""
-        puts "DEBUG: Networks: #{networks.inspect}"
         networks.each do |net|
           case net[0].downcase
           when "bridge"
@@ -152,14 +164,22 @@ module KnifePlugins
             output << "config.vm.network :hostonly, #{parse_hostonly(net[1])}\n"
           end
         end
+        output
       end
 
       # TODO:  see if there's a way to pass this whole thing in as an object or hash or something, instead of writing a file to disk.
       def build_vagrantfile
+        # if no box is given use hostname for the box otherwise use
+        # whats specified
+        box = "config.vm.box = '#{config[:hostname]}'"
+        unless config[:box].empty?
+          box =  "config.vm.box = '#{config[:box]}'"
+        end 
+
         file = <<-EOF
           Vagrant::Config.run do |config|
             #{build_port_forwards(config[:port_forward])}
-            config.vm.box = "#{config[:hostname]}"
+            #{box} 
             config.vm.host_name = "#{config[:hostname]}"
             config.vm.customize [ "modifyvm", :id, "--memory", #{config[:memsize]} ]
             config.vm.customize [ "modifyvm", :id, "--name", "#{config[:hostname]}" ]
@@ -172,6 +192,7 @@ module KnifePlugins
               chef.node_name = "#{config[:hostname]}"
               chef.log_level = :#{config[:chef_loglevel].downcase}
               chef.environment = "#{Chef::Config[:environment]}"
+              chef.json = #{config[:json_attributes]}
               chef.run_list = [
                 #{build_runlist(config[:vagrant_run_list])}
               ]
@@ -185,15 +206,23 @@ module KnifePlugins
         File.open(path, 'w') { |f| f.write(content) }
       end
 
+      def ensure_dir(dir)
+        unless File.directory? dir 
+          puts  "Creating #{dir}" 
+          Dir.mkdir(dir) 
+        end
+      end
+
       #
       def run
         puts "Initializing..."
         vagrantfile = "Vagrantfile"
         vagrantdir = "#{config[:vagrant_dir]}/#{config[:hostname]}/"
 
-        unless File.directory?(vagrantdir)
-          Dir.mkdir(vagrantdir)
-        end
+        # make sure parent dir is there before we try to use it
+        ensure_dir(config[:vagrant_dir])
+        ensure_dir(vagrantdir)
+
         write_vagrantfile("#{vagrantdir}/#{vagrantfile}", build_vagrantfile)
         @vagrant_env = Vagrant::Environment.new(:cwd => vagrantdir, :ui_class => Vagrant::UI::Colored)
         @vagrant_env.load!
