@@ -156,7 +156,6 @@ module KnifePlugins
 
       def build_networks(networks)
         output = ""
-        puts "DEBUG: Networks: #{networks.inspect}"
         networks.each do |net|
           case net[0].downcase
           when "bridge"
@@ -165,6 +164,7 @@ module KnifePlugins
             output << "config.vm.network :hostonly, #{parse_hostonly(net[1])}\n"
           end
         end
+        output
       end
 
       # TODO:  see if there's a way to pass this whole thing in as an object or hash or something, instead of writing a file to disk.
