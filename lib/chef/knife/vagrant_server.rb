@@ -206,15 +206,23 @@ module KnifePlugins
         File.open(path, 'w') { |f| f.write(content) }
       end
 
+      def ensure_dir(dir)
+        unless File.directory? dir 
+          puts  "Creating #{dir}" 
+          Dir.mkdir(dir) 
+        end
+      end
+
       #
       def run
         puts "Initializing..."
         vagrantfile = "Vagrantfile"
         vagrantdir = "#{config[:vagrant_dir]}/#{config[:hostname]}/"
 
-        unless File.directory?(vagrantdir)
-          Dir.mkdir(vagrantdir)
-        end
+        # make sure parent dir is there before we try to use it
+        ensure_dir(config[:vagrant_dir])
+        ensure_dir(vagrantdir)
+
         write_vagrantfile("#{vagrantdir}/#{vagrantfile}", build_vagrantfile)
         @vagrant_env = Vagrant::Environment.new(:cwd => vagrantdir, :ui_class => Vagrant::UI::Colored)
         @vagrant_env.load!
