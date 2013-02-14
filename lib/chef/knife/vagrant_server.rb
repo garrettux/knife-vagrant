@@ -134,6 +134,13 @@ module KnifePlugins
         :proc => lambda { |o| JSON.parse(o) },
         :default => {} 
 
+      option :share_folders,
+        :short => '-S',
+        :long => '--share-folders  SHARES',
+        :description => 'Comma separated list of share folders in the form of  NAME::GUEST_PATH::HOST_PATH',
+        :proc => lambda { |o| o.split(/[\s,]+/) },
+        :default => []
+
       # TODO - hook into chef/runlist
       def build_runlist(runlist)
         runlist.collect { |i| "\"#{i}\"" }.join(",\n")
@@ -165,6 +172,15 @@ module KnifePlugins
         output
       end
 
+      def shares 
+        shares=""
+        config[:share_folders].each do |share|
+          name,guest,host = share.chomp.split "::"
+          shares << "config.vm.share_folder '#{name}', '#{guest}', '#{host}' "
+        end 
+        shares
+      end
+
       # TODO:  see if there's a way to pass this whole thing in as an object or hash or something, instead of writing a file to disk.
       def build_vagrantfile
         # if no box is given use hostname for the box otherwise use
@@ -177,7 +193,8 @@ module KnifePlugins
         file = <<-EOF
           Vagrant::Config.run do |config|
             #{build_port_forwards(config[:port_forward])}
-            #{box} 
+            #{box}
+            #{shares}
             config.vm.host_name = "#{config[:hostname]}"
             config.vm.customize [ "modifyvm", :id, "--memory", #{config[:memsize]} ]
             config.vm.customize [ "modifyvm", :id, "--name", "#{config[:hostname]}" ]
