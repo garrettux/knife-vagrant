@@ -43,7 +43,6 @@ module KnifePlugins
         
         
         @vagrant_env = Vagrant::Environment.new(:cwd => "#{config[:vagrant_dir]}/#{hostname}/", :ui_class => Vagrant::UI::Colored)
-        @vagrant_env.load!
         @vagrant_env.cli("ssh")
       end
     end
@@ -59,7 +58,6 @@ module KnifePlugins
 
       def run
         @vagrant_env = Vagrant::Environment.new(:ui_class => Vagrant::UI::Colored)
-        @vagrant_env.load!
         @vagrant_env.cli("box","list")
       end
     end
@@ -225,7 +223,6 @@ module KnifePlugins
 
         write_vagrantfile("#{vagrantdir}/#{vagrantfile}", build_vagrantfile)
         @vagrant_env = Vagrant::Environment.new(:cwd => vagrantdir, :ui_class => Vagrant::UI::Colored)
-        @vagrant_env.load!
         
         begin
           @vagrant_env.cli("up")
@@ -278,7 +275,6 @@ module KnifePlugins
         
         #Dir.chdir("#{config[:vagrant_dir]}/#{config[:hostname]}/")
         @vagrant_env = Vagrant::Environment.new(:cwd => vagrantdir, :ui_class => Vagrant::UI::Colored)
-        @vagrant_env.load!
         @vagrant_env.cli("box","remove",hostname)
         delete_object(Chef::Node, hostname)
         delete_object(Chef::ApiClient, hostname)
