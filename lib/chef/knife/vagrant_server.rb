@@ -1,4 +1,5 @@
 # knife-vagrant
+>>>>>>> timeout
 # knife plugin for spinning up a vagrant instance and testing a runlist.
 
 module KnifePlugins
@@ -180,7 +181,6 @@ module KnifePlugins
             #{box} 
             config.vm.host_name = "#{config[:hostname]}"
             config.vm.customize [ "modifyvm", :id, "--memory", #{config[:memsize]} ]
-            config.vm.customize [ "modifyvm", :id, "--name", "#{config[:hostname]}" ]
             config.vm.box_url = "#{config[:box_url]}"
             #{build_networks(config[:networks])}
             config.vm.provision :chef_client do |chef|
